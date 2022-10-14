@@ -1,0 +1,76 @@
+---
+title: "sm2732_BF_HW5"
+output: html_document
+date: "2022-10-13"
+---
+
+
+
+
+```{r}
+
+# Business Forecasting HW5
+# Name - Sarjak Atul Maniar
+# Email - sm2732@scarletmail.rutgers.edu
+
+
+
+library(fpp)
+library(fpp2)
+
+data(boston) # picking up the boston dataset
+boston
+
+head(boston)
+
+class(boston)
+
+frequency(boston) # The cycle of this time series is 12 months in a year
+
+summary(boston)
+
+dim(boston) # [1] 35  2   i.e 35 rows and 2 columns
+
+colnames(boston)  # [1] "nyase" "bse"  
+
+plot(boston)
+
+nrow(boston) # 35 rows
+ncol(boston) # 2 columns
+
+bse_ts <- ts((boston[,"bse"]), frequency = 12, start = c(1967,1))
+bse_ts
+class(bse_ts)
+
+stl_decomp <- stl(bse_ts, s.window ="periodic")
+plot(stl_decomp)  # we can see that from 1967 to mid 1968, there is a positive trend and after that there is a negative trend...
+attributes(stl_decomp)
+
+# Lets print out a seasonal adjustment
+seasadj(stl_decomp) # Returns seasonally adjusted data constructed by removing the seasonal component.
+boston[,"bse"] # this is bse column to refer the original values
+
+# Plot a line on the graph
+plot(bse_ts)
+lines(seasadj(stl_decomp), col="Red")
+
+# Default period forecast
+f_stl <- forecast(stl_decomp)
+
+# you can pass the # of period
+f_stl <- forecast(stl_decomp,h=15)
+f_stl
+plot(f_stl)
+
+# There is more than one way to do things
+decomp_bse_ts <- decompose(bse_ts)
+plot(decomp_bse_ts)
+
+# Each one shows different attributes 
+attributes(decomp_bse_ts)
+seasadj(decomp_bse_ts)
+
+
+
+```
+
